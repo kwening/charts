@@ -723,6 +723,9 @@ artifactory:
     jfconnect_service:
       enabled: false
     {{- end }}
+    event:
+      webhooks:
+        urlStrictPolicy: {{ .Values.event.webhooks.urlStrictPolicy }}
   annotations: {}
   service:
     name: artifactory
@@ -1198,6 +1201,8 @@ event:
       failureThreshold: 90
       periodSeconds: 5
       timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
+  webhooks:
+    urlStrictPolicy: true
 jfconnect:
   name: jfconnect
   enabled: true

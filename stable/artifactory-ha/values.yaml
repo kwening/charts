@@ -10,7 +10,7 @@ global:
   ## Chart.AppVersion can be overidden using global.versions.artifactory or .Values.artifactory.image.tag
   ## Note: Order of preference is 1) global.versions 2) .Values.artifactory.image.tag 3) Chart.AppVersion
   ## This applies also for nginx images (.Values.nginx.image.tag)
-  versions: {}
+  versions: { }
   #   artifactory:
   # joinKey:
   # masterKey:
@@ -33,7 +33,7 @@ global:
     enabled: false
     # certificateSecretName:
   ## Applies to artifactory and nginx pods
-  nodeSelector: {}
+  nodeSelector: { }
 ## String to partially override artifactory-ha.fullname template (will maintain the release name)
 ##
 # nameOverride:
@@ -86,7 +86,7 @@ serviceAccount:
   ## The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the fullname template
   name:
-  annotations: {}
+  annotations: { }
   ## Explicitly mounts the  API token for the service account to the pods
   automountServiceAccountToken: false
 ingress:
@@ -94,28 +94,28 @@ ingress:
   defaultBackend:
     enabled: true
   # Used to create an Ingress record.
-  hosts: []
+  hosts: [ ]
   routerPath: /
   artifactoryPath: /artifactory/
   className: ""
-  annotations: {}
+  annotations: { }
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
   # nginx.ingress.kubernetes.io/proxy-body-size: "0"
-  labels: {}
+  labels: { }
   # traffic-type: external
   # traffic-type: internal
-  tls: []
+  tls: [ ]
   # Secrets must be manually created in the namespace.
   # - secretName: chart-example-tls
   #   hosts:
   #     - artifactory.domain.example
 
   # Additional ingress rules
-  additionalRules: []
+  additionalRules: [ ]
 ## Allows to add custom ingress
 customIngress: ""
-networkpolicy: []
+networkpolicy: [ ]
 # Allows all ingress and egress
 # - name: artifactory
 #   podSelector:
@@ -161,14 +161,14 @@ postgresql:
   service:
     port: 5432
   primary:
-    nodeSelector: {}
-    affinity: {}
-    tolerations: []
+    nodeSelector: { }
+    affinity: { }
+    tolerations: [ ]
   readReplicas:
-    nodeSelector: {}
-    affinity: {}
-    tolerations: []
-  resources: {}
+    nodeSelector: { }
+    affinity: { }
+    tolerations: [ ]
+  resources: { }
   #  requests:
   #    memory: "512Mi"
   #    cpu: "100m"
@@ -188,7 +188,7 @@ database:
   password:
   ## If you have existing Kubernetes secrets containing db credentials, use
   ## these values
-  secrets: {}
+  secrets: { }
   #  user:
   #    name: "rds-artifactory"
   #    key: "db-user"
@@ -230,7 +230,7 @@ router:
   extraEnvironmentVariables:
   # - name: MY_ENV_VAR
   #   value: ""
-  resources: {}
+  resources: { }
   #  requests:
   #    memory: "100Mi"
   #    cpu: "100m"
@@ -243,7 +243,7 @@ router:
     # From Artifactory versions 7.52.x, Wait for Artifactory to complete any open uploads or downloads before terminating
     preStop:
       exec:
-        command: ["sh", "-c", "while [[ $(curl --fail --silent --connect-timeout 2 http://localhost:8081/artifactory/api/v1/system/liveness) =~ OK ]]; do echo Artifactory is still alive; sleep 2; done"]
+        command: [ "sh", "-c", "while [[ $(curl --fail --silent --connect-timeout 2 http://localhost:8081/artifactory/api/v1/system/liveness) =~ OK ]]; do echo Artifactory is still alive; sleep 2; done" ]
     # postStart:
     #   exec:
     #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler"]
@@ -375,7 +375,7 @@ artifactory:
   #    target: etc/artifactory/
 
   # Sidecar containers for tailing Artifactory logs
-  loggers: []
+  loggers: [ ]
   # - access-audit.log
   # - access-request.log
   # - access-security-audit.log
@@ -395,7 +395,7 @@ artifactory:
   # - derby.log
 
   # Loggers containers resources
-  loggersResources: {}
+  loggersResources: { }
   #  requests:
   #    memory: "10Mi"
   #    cpu: "10m"
@@ -404,12 +404,12 @@ artifactory:
   #    cpu: "50m"
 
   # Sidecar containers for tailing Tomcat (catalina) logs
-  catalinaLoggers: []
+  catalinaLoggers: [ ]
   # - tomcat-catalina.log
   # - tomcat-localhost.log
 
   # Tomcat (catalina) loggers resources
-  catalinaLoggersResources: {}
+  catalinaLoggersResources: { }
   #  requests:
   #    memory: "10Mi"
   #    cpu: "10m"
@@ -513,7 +513,7 @@ artifactory:
   #    subPath: prehook-start.sh
 
   # Add custom persistent volume mounts - Available to the entire namespace
-  customPersistentVolumeClaim: {}
+  customPersistentVolumeClaim: { }
   #  name:
   #  mountPath:
   #  accessModes:
@@ -596,7 +596,7 @@ artifactory:
   # preStartCommand: "mkdir -p /opt/jfrog/artifactory/var/bootstrap/artifactory/tomcat/lib; cd /opt/jfrog/artifactory/var/bootstrap/artifactory/tomcat/lib && curl -o /opt/jfrog/artifactory/var/bootstrap/artifactory/tomcat/lib/mysql-connector-java-5.1.41.jar https://jcenter.bintray.com/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar"
 
   # Add lifecycle hooks for artifactory container
-  lifecycle: {}
+  lifecycle: { }
   # postStart:
   #   exec:
   #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler"]
@@ -761,6 +761,9 @@ artifactory:
     jfconnect_service:
       enabled: false
     {{- end }}
+    event:
+      webhooks:
+        urlStrictPolicy: {{ .Values.event.webhooks.urlStrictPolicy }}
   ## IMPORTANT: If overriding artifactory.internalPort:
   ## DO NOT use port lower than 1024 as Artifactory runs as non-root and cannot bind to ports lower than 1024!
   externalPort: 8082
@@ -882,7 +885,7 @@ artifactory:
       dataDir: "/var/opt/jfrog/artifactory-ha"
       backupDir: "/var/opt/jfrog/artifactory-backup"
       capacity: 200Gi
-      mountOptions: []
+      mountOptions: [ ]
     ## For artifactory.persistence.type google-storage
     googleStorage:
       ## When using GCP buckets as your binary store (Available with enterprise license only)
@@ -954,8 +957,8 @@ artifactory:
     ## Example: loadBalancerSourceRanges: ['10.10.10.5/32', '10.11.10.5/32']
     ## or pass from helm command line
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
-    loadBalancerSourceRanges: []
-    annotations: {}
+    loadBalancerSourceRanges: [ ]
+    annotations: { }
     ## Which nodes in the cluster should be in the external load balancer pool (have external traffic routed to them)
     ## Supported pool values
     ## members
@@ -965,11 +968,11 @@ artifactory:
     # nodePort: 32082
   ## The following Java options are passed to the java process running Artifactory.
   ## This will be passed to all cluster members. Primary and member nodes.
-  javaOpts: {}
+  javaOpts: { }
   # other: ""
 
   statefulset:
-    annotations: {}
+    annotations: { }
   ## The following setting are to configure a dedicated Ingress object for Replicator service
   replicator:
     name: replicator
@@ -979,7 +982,7 @@ artifactory:
     extraEnvironmentVariables:
     # - name: MY_ENV_VAR
     #   value: ""
-    resources: {}
+    resources: { }
     #  requests:
     #    memory: "100Mi"
     #    cpu: "100m"
@@ -988,7 +991,7 @@ artifactory:
     #    cpu: "1"
 
     # Add lifecycle hooks for replicator container
-    lifecycle: {}
+    lifecycle: { }
     # postStart:
     #   exec:
     #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler"]
@@ -998,14 +1001,14 @@ artifactory:
 
     ingress:
       name:
-      hosts: []
+      hosts: [ ]
       className: ""
-      annotations: {}
+      annotations: { }
       # kubernetes.io/ingress.class: nginx
       # nginx.ingress.kubernetes.io/proxy-buffering: "off"
       # nginx.ingress.kubernetes.io/configuration-snippet: |
       #   chunked_transfer_encoding on;
-      tls: []
+      tls: [ ]
       #  Secrets must be manually created in the namespace.
       # - hosts:
       #   - artifactory.domain.example
@@ -1015,14 +1018,14 @@ artifactory:
     trackerIngress:
       enabled: false
       name:
-      hosts: []
+      hosts: [ ]
       className: ""
-      annotations: {}
+      annotations: { }
       # kubernetes.io/ingress.class: nginx
       # nginx.ingress.kubernetes.io/proxy-buffering: "off"
       # nginx.ingress.kubernetes.io/configuration-snippet: |
       #   chunked_transfer_encoding on;
-      tls: []
+      tls: [ ]
       #  Secrets must be manually created in the namespace.
       # - hosts:
       #   - artifactory.domain.example
@@ -1031,10 +1034,10 @@ artifactory:
     enabled: false
     internalPort: 1339
     externalPort: 1339
-  annotations: {}
+  annotations: { }
   # Spread Artifactory pods evenly across your nodes or some other topology
   # Note this applies to both the primary and replicas
-  topologySpreadConstraints: []
+  topologySpreadConstraints: [ ]
   # - maxSkew: 1
   #   topologyKey: kubernetes.io/hostname
   #   whenUnsatisfiable: DoNotSchedule
@@ -1051,7 +1054,7 @@ artifactory:
     name: artifactory-ha-primary
     # preStartCommand specific to the primary node, to be run after artifactory.preStartCommand
     # preStartCommand:
-    labels: {}
+    labels: { }
     persistence:
       ## Set existingClaim to true or false
       ## If true, you must prepare a PVC with the name e.g `volume-myrelease-artifactory-ha-primary-0`
@@ -1062,7 +1065,7 @@ artifactory:
     updateStrategy:
       type: RollingUpdate
     ## Resources for the primary node
-    resources: {}
+    resources: { }
     #  requests:
     #    memory: "1Gi"
     #    cpu: "500m"
@@ -1085,9 +1088,9 @@ artifactory:
         accessFile:
         passwordFile:
         # other: ""
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
+    nodeSelector: { }
+    tolerations: [ ]
+    affinity: { }
     ## Only used if "affinity" is empty
     podAntiAffinity:
       ## Valid values are "soft" or "hard"; any other value indicates no anti-affinity
@@ -1097,7 +1100,7 @@ artifactory:
     name: artifactory-ha-member
     # preStartCommand specific to the member node, to be run after artifactory.preStartCommand
     # preStartCommand:
-    labels: {}
+    labels: { }
     persistence:
       ## Set existingClaim to true or false
       ## If true, you must prepare a PVC with the name e.g `volume-myrelease-artifactory-ha-member-0`
@@ -1107,7 +1110,7 @@ artifactory:
       type: RollingUpdate
     minAvailable: 1
     ## Resources for the member nodes
-    resources: {}
+    resources: { }
     #  requests:
     #    memory: "1Gi"
     #    cpu: "500m"
@@ -1133,16 +1136,16 @@ artifactory:
     #  xms: "1g"
     #  xmx: "2g"
     #  other: ""
-    nodeSelector: {}
+    nodeSelector: { }
     ## Wait for Artifactory primary
     waitForPrimaryStartup:
       enabled: true
       ## Setting time will override the built in test and will just wait the set time
       time:
-    tolerations: []
+    tolerations: [ ]
     ## Complete specification of the "affinity" of the member nodes; if this is non-empty,
     ## "podAntiAffinity" values are not used.
-    affinity: {}
+    affinity: { }
     ## Only used if "affinity" is empty
     podAntiAffinity:
       ## Valid values are "soft" or "hard"; any other value indicates no anti-affinity
@@ -1157,7 +1160,7 @@ frontend:
   extraEnvironmentVariables:
   # - name: MY_ENV_VAR
   #   value: ""
-  resources: {}
+  resources: { }
   #  requests:
   #    memory: "100Mi"
   #    cpu: "100m"
@@ -1169,7 +1172,7 @@ frontend:
     ## Time in minutes after which the frontend token will need to be refreshed
     timeoutMinutes: '30'
   # Add lifecycle hooks for frontend container
-  lifecycle: {}
+  lifecycle: { }
   # postStart:
   #   exec:
   #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler"]
@@ -1234,7 +1237,7 @@ metadata:
   extraEnvironmentVariables:
   # - name: MY_ENV_VAR
   #   value: ""
-  resources: {}
+  resources: { }
   #  requests:
   #    memory: "100Mi"
   #    cpu: "100m"
@@ -1244,7 +1247,7 @@ metadata:
   database:
     maxOpenConnections: 80
   # Add lifecycle hooks for metadata container
-  lifecycle: {}
+  lifecycle: { }
   # postStart:
   #   exec:
   #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler"]
@@ -1287,7 +1290,7 @@ event:
   extraEnvironmentVariables:
   # - name: MY_ENV_VAR
   #   value: ""
-  resources: {}
+  resources: { }
   #  requests:
   #    memory: "100Mi"
   #    cpu: "100m"
@@ -1296,7 +1299,7 @@ event:
   #    cpu: "1"
 
   # Add lifecycle hooks for event container
-  lifecycle: {}
+  lifecycle: { }
   # postStart:
   #   exec:
   #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler"]
@@ -1330,6 +1333,8 @@ event:
       failureThreshold: 90
       periodSeconds: 5
       timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
+  webhooks:
+    urlStrictPolicy: true
 jfconnect:
   name: jfconnect
   enabled: true
@@ -1339,7 +1344,7 @@ jfconnect:
   extraEnvironmentVariables:
   # - name: MY_ENV_VAR
   #   value: ""
-  resources: {}
+  resources: { }
   #  requests:
   #    memory: "100Mi"
   #    cpu: "100m"
@@ -1348,7 +1353,7 @@ jfconnect:
   #    cpu: "1"
 
   # Add lifecycle hooks for jfconnect container
-  lifecycle: {}
+  lifecycle: { }
   # postStart:
   #   exec:
   #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler"]
@@ -1391,7 +1396,7 @@ integration:
   extraEnvironmentVariables:
   # - name: MY_ENV_VAR
   #   value: ""
-  resources: {}
+  resources: { }
   #  requests:
   #    memory: "100Mi"
   #    cpu: "100m"
@@ -1400,7 +1405,7 @@ integration:
   #    cpu: "1"
 
   # Add lifecycle hooks for integration container
-  lifecycle: {}
+  lifecycle: { }
   # postStart:
   #   exec:
   #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler"]
@@ -1443,7 +1448,7 @@ observability:
   extraEnvironmentVariables:
   # - name: MY_ENV_VAR
   #   value: ""
-  resources: {}
+  resources: { }
   #  requests:
   #    memory: "100Mi"
   #    cpu: "100m"
@@ -1452,7 +1457,7 @@ observability:
   #    cpu: "1"
 
   # Add lifecycle hooks for observability container
-  lifecycle: {}
+  lifecycle: { }
   # postStart:
   #   exec:
   #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler"]
@@ -1512,13 +1517,13 @@ nginx:
   enabled: true
   kind: Deployment
   name: nginx
-  labels: {}
+  labels: { }
   replicaCount: 1
   minAvailable: 0
   uid: 104
   gid: 107
-  securityContext: {}
-  annotations: {}
+  securityContext: { }
+  annotations: { }
   terminationGracePeriodSeconds: 30
   disableProxyBuffering: false
   # Note that by default we use appVersion to get image tag/version
@@ -1528,11 +1533,11 @@ nginx:
     # tag:
     pullPolicy: IfNotPresent
   deployment:
-    annotations: {}
+    annotations: { }
   # Priority Class name to be used in deployment if provided
   priorityClassName:
   # Spread nginx pods evenly across your nodes or some other topology
-  topologySpreadConstraints: []
+  topologySpreadConstraints: [ ]
   # - maxSkew: 1
   #   topologyKey: kubernetes.io/hostname
   #   whenUnsatisfiable: DoNotSchedule
@@ -1544,7 +1549,7 @@ nginx:
 
   # Add lifecycle hooks for the nginx pods
   # For example, you can add a `preStop` hook that sends a SIGQUIT to nginx and wait for it to terminate gracefully
-  lifecycle: {}
+  lifecycle: { }
   # postStart:
   #   exec:
   #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /var/opt/jfrog/nginx/message"]
@@ -1553,12 +1558,12 @@ nginx:
   #     command: ["/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"]
 
   # Sidecar containers for tailing Nginx logs
-  loggers: []
+  loggers: [ ]
   # - access.log
   # - error.log
 
   # Loggers containers resources
-  loggersResources: {}
+  loggersResources: { }
   #  requests:
   #    memory: "64Mi"
   #    cpu: "25m"
@@ -1571,7 +1576,7 @@ nginx:
     stderr: false
     level: warn
   ## A list of custom ports to expose on the NGINX pod. Follows the conventional Kubernetes yaml syntax for container ports.
-  customPorts: []
+  customPorts: [ ]
   # customPorts:
   # - containerPort: 8066
   #   name: docker
@@ -1743,17 +1748,17 @@ nginx:
     ## Example: loadBalancerSourceRanges: ['10.10.10.5/32', '10.11.10.5/32']
     ## or pass from helm command line
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
-    loadBalancerSourceRanges: []
+    loadBalancerSourceRanges: [ ]
     ## Provide static ip address
     loadBalancerIP:
     ## There are two available options: “Cluster” (default) and “Local”.
     externalTrafficPolicy: Cluster
-    labels: {}
+    labels: { }
     #  label-key: label-value
     ## If the type is NodePort you can set a fixed port
     # nodePort: 32082
     ## A list of custom ports to be exposed on nginx service. Follows the conventional Kubernetes yaml syntax for service ports.
-    customPorts: []
+    customPorts: [ ]
     # - port: 8066
     #   targetPort: 8066
     #   protocol: TCP
@@ -1838,7 +1843,7 @@ nginx:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClassName: "-"
-  resources: {}
+  resources: { }
   #  requests:
   #    memory: "250Mi"
   #    cpu: "100m"
@@ -1846,9 +1851,9 @@ nginx:
   #    memory: "250Mi"
   #    cpu: "500m"
 
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
+  nodeSelector: { }
+  tolerations: [ ]
+  affinity: { }
 # Filebeat Sidecar container
 ## The provided filebeat configuration is for Artifactory logs. It assumes you have a logstash installed and configured properly.
 filebeat:
@@ -1883,7 +1888,7 @@ filebeat:
     initialDelaySeconds: 10
     periodSeconds: 10
     timeoutSeconds: 5
-  resources: {}
+  resources: { }
   #    requests:
   #      memory: "100Mi"
   #      cpu: "100m"
@@ -1916,7 +1921,7 @@ filebeat:
 additionalResources: ""
 # Adding entries to a Pod's /etc/hosts file
 # For an example, refer - https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases
-hostAliases: []
+hostAliases: [ ]
 #  - ip: "127.0.0.1"
 #    hostnames:
 #      - "foo.local"
